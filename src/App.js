@@ -1,25 +1,80 @@
-import logo from './logo.svg';
 import './App.css';
+import React from "react";
+import Form from "./components/Form/Form";
+import ContactsList from "./components/ContactsList/ContactsList";
+import Filter from "./components/Filter/Filter";
+import {connect} from "react-redux";
+import * as actions from "./redux/actions";
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
-}
+const App = ({contacts, onAddContact, onDeleteContact}) => {
+    return (
+        <>
+            <h2>Phonebook</h2>
+            <Form addContact={onAddContact}/>
+            {contacts.length > 1 &&
+            <Filter/>
+            }
+            {contacts.length > 0 &&
+            <ContactsList
+                contacts={contacts}
+                deleteContact={onDeleteContact}
+            />
+            }
+        </>
+    )
+};
 
-export default App;
+const mapStateToProps = (state) => {
+    return {
+        contacts: state.contacts,
+    };
+};
+
+const mapDispatchToProps = dispatch => {
+    return {
+        onAddContact: () => dispatch(actions.addContact()),
+        onDeleteContact: () => dispatch(actions.deleteContact()),
+    };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(App);
+
+// state = {
+//   contacts: [],
+//   name: "",
+//   number: "",
+//   filter: "",
+// }
+
+// addContact = ({name, number}) => {
+//   const contact = {
+//     name,
+//     number,
+//     id: Date.now(),
+//   };
+//   if (this.state.contacts.find(contact => contact.name === name)) {
+//     return alert(`${name} is already in contacts`);
+//   }
+//
+//   this.setState(prev => ({
+//     contacts: [...prev.contacts, contact],
+//   }));
+// };
+
+// deleteContact = (id) => {
+//   this.setState(prev => ({
+//     contacts: prev.contacts.filter(contact => contact.id !== id),
+//   }));
+// };
+
+// //метод для обновления фильтра
+// handleInputChange = (filter) => {
+//   this.setState({filter});
+// };
+
+// getVisibleContacts = () => {
+//   const {contacts, filter} = this.state;
+//   return contacts.filter(contact =>
+//       contact.name.toLowerCase().includes(filter.toLowerCase())
+//   );
+// };
